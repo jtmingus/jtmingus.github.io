@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+	<head>
+		<link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+		<style type="text/css">
+			.header {
+				height: 100px;
+				font-family: 'Dosis', sans-serif;
+				color: white;
+				text-align: center;
+				font-size: 48px;
+			}
+			.header .title {
+				display: inline-block;
+				font-size: 64px;
+			}
+			.header .lives {
+				text-align: left;
+				display: inline-block;
+				position: absolute;
+				right: 0;
+				top: 0;
+				padding: 10px;
+
+			}
+			.header .lives .circle {
+				display: inline-block;
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+				box-shadow: 0px 0px 4px 0px white;
+				background: #eee;
+			}
+
+			.header .score {
+				text-align: left;
+				display: inline-block;
+				position: absolute;
+				top: 0;
+				left: 0;
+				padding: 10px;
+			}
+
+			.header .score .count {
+				font-size: 48px;
+			}
+
+			.header .lives > div, .header .score > div {
+				margin: 4px;
+			}
+			.game {
+				padding: 10px;
+			}
+			#gameCanvas {
+				border-radius: 50%;
+				border: 2px solid black;
+				display: block;
+				margin: auto;
+				box-shadow: 0px 0px 10px 0px white;
+				overflow: auto;
+			}
+
+			html, body, #fullscreen {
+				background: #000005;
+				min-width: 100%;
+				min-height: 100%;
+				overflow: hidden;
+			}
+
+			#dialog {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="fullscreen">
+			<div class="header">
+				<div class="score">
+					<div>Score:</div>
+					<div class="count">0</div>
+				</div>
+				<div class="title">Level <span class="level-number">1</span></div>
+				<div class="lives">
+					<div>Lives:</div>
+					<div class="circle"></div>
+					<div class="circle"></div>
+					<div class="circle"></div>
+				</div>
+			</div>
+			<div class="game">
+				<canvas id="gameCanvas" height="600" width="600">
+				</canvas>
+			</div>
+			<div id="dialog"></div>
+		</div>
+		
+		<script type="text/javascript">
+			(function run(){
+				class StyleConfig {
+					constructor(fillColor, strokeColor, strokeSize, fill) {
+						this.fillColor = fillColor;
+						this.strokeColor = strokeColor;
+						this.strokeSize = strokeSize;
+						this.fill = fill;
+					}
+				}
+
+				var gameInterval;
+
+				var game = {
+					background: {
+						ready: false,
+						image: new Image()
+					},
+					canvas: document.getElementById('gameCanvas'),
+					finish: function() {
+						clearInterval(gameInterval);
+						clearInterval(genAsteroidInterval);
+						gameInterval = null;
+						genAsteroidInterval = null;
+
+						$('#dialog').html('Game Over');
+						$('#dialog').dialog('open');
+						// $('#dialog').dialog({
+						// 	modal: true,
+						// 	buttons: {
+						// 		'Start Over': function() {
+
+						// 			$(this).dialog('close');
+						// 		}
+						// 	}
+						// })
+					},
+					lives: 3,
+					score: 0,
+					highScore: 0,
+					nextLevel: function() {
+
+					},
+					pause: function() {
+						if(gameInterval) {
+							clearInterval(gameInterval);
+							clearInterval(genAsteroidInterval);
+							gameInterval = null;
+							genAsteroidInterval = null;
+						} else {
+							gameInterval = setInterval(updateGame, 1000/30);
+							genAsteroidInterval = setInterval(generateAsteroid, 2000);
+						}
+						
+
+					},
+					start: function() {
+						this.context = this.canvas.getContext('2d');
+						gameInterval = setInterval(updateGame, 1000/30);
+					},
+					update: function() {
+						this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+						this.background.image.src = 'space.png';
+						this.context.drawImage(this.background.image, 0, 0);
+					}
+
+				};
+
+				var arc = function(x,y,radius,startAngle,endAngle, styleConfig) {
+					this.x = x;
+					this.y = y;
+					this.radius = radius;
+					this.start = startAngle;
+					this.end = endAngle;
+					this.style = styleConfig;
+					this.update = function() {
+						game.context.beginPath();
+						game.context.shadowBlur = 6;
+						game.context.shadowColor = this.style.strokeColor;
+						game.context.arc(this.x, this.y, this.radius, this.start, this.end, false);
+						game.context.strokeStyle = this.style.strokeColor;
+						game.context.lineWidth = this.style.strokeSize;
+						game.context.stroke();
+						if(this.style.fill) {
+							game.context.fillStyle = this.style.fillColor;
+							game.context.fill();
+						}
+					};
+				};
+
+
+				var DEFAULT_SPEED = 2;
+				var asteroid_id = 0;
+				var asteroid = function() {
+					var style = new StyleConfig('#ff2323', '#ff2323', '#ff2323', true);
+					var angle = Math.random() * 2 * Math.PI;
+					var x = Math.cos(angle) * 310 + 300;
+					var y = Math.sin(angle) * 310 + 300;
+					this.angle = angle;
+					this.arc = new arc(x,y,4,0,Math.PI*2,style);
+					this._x = Math.cos(angle) * DEFAULT_SPEED;
+					this._y = Math.sin(angle) * DEFAULT_SPEED;
+					this.update = function() {
+						this.arc.x -= this._x;
+						this.arc.y -= this._y;
+					};
+					this.id = asteroid_id;
+					asteroid_id += 1;
+				};
+
+				
+				var asteroidMap = {};
+				function generateAsteroid() {
+					var newAsteroid = new asteroid();
+					asteroidMap[newAsteroid.id] = newAsteroid;
+				}
+				var genAsteroidInterval = setInterval(generateAsteroid, 2000);
+				
+				var shieldRadius = 40;
+				var centerRadius = 10;
+				var playerShield = new arc(300,300,shieldRadius,7*Math.PI/4, Math.PI/4, new StyleConfig(null, '#64FF33', 4, null));
+				var playerCenter = new arc(300,300,centerRadius,0,Math.PI*2,new StyleConfig('white', 'white', null, true));
+
+				var updateGame = function() {
+					game.update();
+					playerShield.update();
+					playerCenter.update();
+					updateShape(Math.PI/32);
+					for (var id in asteroidMap) {
+						let curAst = asteroidMap[id];
+						if (Math.abs(distFromCenter(curAst) - playerShield.radius) < 8 &&
+							((playerShield.start < curAst.angle && curAst.angle < playerShield.start + Math.PI/2) ||
+							(playerShield.end - Math.PI/2 < curAst.angle && curAst.angle < playerShield.end))) {
+							updateScore();
+							delete asteroidMap[id];
+						} if (Math.abs(distFromCenter(curAst) - playerCenter.radius) < 8) {
+							game.lives -= 1;
+							updateLives();
+							delete asteroidMap[id];
+						} else {
+							curAst.update();
+							curAst.arc.update();
+						}	
+					}
+				};
+
+				var updateLives = function() {
+					$('.circle').each(function(index) {
+						if (index >= game.lives) {
+							$(this).css('background-color', 'transparent');
+						}
+					});
+					if (game.lives === 0) {
+						game.finish();
+					}
+				};
+
+				var updateScore = function() {
+					game.score += 1;
+					game.highScore = Math.max(game.score, game.highScore);
+					$('.score .count').text(game.score);
+				};
+
+				var keysDown = {};
+				addEventListener("keydown", function (e) {
+					keysDown[e.keyCode] = true;
+				}, false);
+
+				addEventListener("keyup", function (e) {
+					delete keysDown[e.keyCode];
+				}, false);
+
+
+				var updateShape = function (modifier) {
+					if (37 in keysDown) { // Player holding left
+						playerShield.start -= modifier;
+						playerShield.end -= modifier;
+					}
+					if (39 in keysDown) { // Player holding right
+						playerShield.start += modifier;
+						playerShield.end += modifier;				
+					}
+					if (38 in keysDown) {
+						playerShield.radius += 1;
+					}
+					if (40 in keysDown) {
+						playerShield.radius -= 1;
+					}
+					playerShield.radius = Math.min(shieldRadius*2, Math.max(shieldRadius/2, playerShield.radius));
+					playerShield.start = playerShield.start < 0 ? Math.PI * 2 + playerShield.start : playerShield.start % (Math.PI * 2);
+					playerShield.end = playerShield.end < 0 ? Math.PI * 2 + playerShield.end : playerShield.end % (Math.PI * 2);
+				};
+
+				// Pause Listener
+				$(window).keypress(function (e) {
+					if (e.keyCode === 32) {
+				    	game.pause();
+					}
+				});
+
+				game.start();
+
+				var distFromCenter = function(asteroid) {
+					var _x = Math.abs(300 - asteroid.arc.x);
+					var _y = Math.abs(300 - asteroid.arc.y);
+					return Math.sqrt(Math.pow(_x,2) + Math.pow(_y,2));
+				};
+
+			})()
+			
+		</script>
+	</body>
+</html>

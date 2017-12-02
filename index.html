@@ -68,7 +68,10 @@
 			}
 
 			#dialog {
-				display: none;
+				color: white;
+				font-size: 48px;
+				font-family: 'Dosis', sans-serif;
+				text-align: center;
 			}
 		</style>
 	</head>
@@ -118,24 +121,28 @@
 						clearInterval(genAsteroidInterval);
 						gameInterval = null;
 						genAsteroidInterval = null;
+						asteroidMap = {};
 
-						$('#dialog').html('Game Over');
-						$('#dialog').dialog('open');
-						// $('#dialog').dialog({
-						// 	modal: true,
-						// 	buttons: {
-						// 		'Start Over': function() {
-
-						// 			$(this).dialog('close');
-						// 		}
-						// 	}
-						// })
+						$('#dialog').text('Game Over').show();
+						this.isFinished = true;
 					},
+					isFinished: false,
+					level: 1,
 					lives: 3,
 					score: 0,
-					highScore: 0,
 					nextLevel: function() {
-
+						if (genAsteroidInterval) {
+							DEFAULT_SPEED *= 1.1;
+							clearInterval(genAsteroidInterval);
+							genAsteroidInterval = null;
+							setTimeout(function() {
+								asteroid_id = 0;
+								asteroidPerLevel = getAsteroidsPerLevel();
+								genAsteroidInterval = setInterval(generateAsteroid, 2000);
+							}, 2000);
+							this.level += 1;
+							$('.level-number').text(this.level);
+						}
 					},
 					pause: function() {
 						if(gameInterval) {
@@ -143,8 +150,8 @@
 							clearInterval(genAsteroidInterval);
 							gameInterval = null;
 							genAsteroidInterval = null;
-						} else {
-							gameInterval = setInterval(updateGame, 1000/30);
+						} else if (!this.isFinished) {
+							gameInterval = setInterval(updateGame, 1000/60);
 							genAsteroidInterval = setInterval(generateAsteroid, 2000);
 						}
 						
@@ -152,7 +159,7 @@
 					},
 					start: function() {
 						this.context = this.canvas.getContext('2d');
-						gameInterval = setInterval(updateGame, 1000/30);
+						gameInterval = setInterval(updateGame, 1000/60);
 					},
 					update: function() {
 						this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -185,7 +192,7 @@
 				};
 
 
-				var DEFAULT_SPEED = 2;
+				var DEFAULT_SPEED = 1;
 				var asteroid_id = 0;
 				var asteroid = function() {
 					var style = new StyleConfig('#ff2323', '#ff2323', '#ff2323', true);
@@ -204,11 +211,17 @@
 					asteroid_id += 1;
 				};
 
-				
+				var getAsteroidsPerLevel = function() {
+					return Math.floor(Math.random() * 5 + 5);
+				}
+
+				var asteroidPerLevel = getAsteroidsPerLevel();
 				var asteroidMap = {};
 				function generateAsteroid() {
-					var newAsteroid = new asteroid();
-					asteroidMap[newAsteroid.id] = newAsteroid;
+					if (asteroid_id < asteroidPerLevel) {
+						var newAsteroid = new asteroid();
+						asteroidMap[newAsteroid.id] = newAsteroid;
+					}
 				}
 				var genAsteroidInterval = setInterval(generateAsteroid, 2000);
 				
@@ -217,11 +230,15 @@
 				var playerShield = new arc(300,300,shieldRadius,7*Math.PI/4, Math.PI/4, new StyleConfig(null, '#64FF33', 4, null));
 				var playerCenter = new arc(300,300,centerRadius,0,Math.PI*2,new StyleConfig('white', 'white', null, true));
 
+
 				var updateGame = function() {
 					game.update();
 					playerShield.update();
 					playerCenter.update();
-					updateShape(Math.PI/32);
+					updateShape(Math.PI/64);
+					if (asteroid_id === asteroidPerLevel && Object.keys(asteroidMap).length === 0) {
+						game.nextLevel();
+					}
 					for (var id in asteroidMap) {
 						let curAst = asteroidMap[id];
 						if (Math.abs(distFromCenter(curAst) - playerShield.radius) < 8 &&
@@ -253,7 +270,6 @@
 
 				var updateScore = function() {
 					game.score += 1;
-					game.highScore = Math.max(game.score, game.highScore);
 					$('.score .count').text(game.score);
 				};
 

@@ -338,7 +338,7 @@
 						playerShield.radius -= 1;
 					}
 					if (deltaY) {
-						playerShield.radius += (deltaY / $(document).height()) * 40.0;
+						playerShield.radius -= (deltaY / $(document).height()) * 40.0;
 					}
 					deltaX = 0;
 					deltaY = 0;

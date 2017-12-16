@@ -112,12 +112,14 @@
 
 				if (window.mobilecheck()) {
 					document.addEventListener('touchstart', function(e) {
+						e.preventDefault();
 						const touch = e.touches[0];
 						prevX = touch.pageX;
 						prevY = touch.pageY;
 					});
 
 					document.addEventListener('touchmove', function(e) {
+						e.preventDefault();
 					    const touch = e.touches[0];
 					    deltaX = touch.pageX - prevX;
 					    deltaY = touch.pageY - prevY;

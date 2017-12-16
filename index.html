@@ -3,6 +3,12 @@
 		<link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 		<style type="text/css">
+			body {
+				height: 100%;
+				overflow: hidden;
+				width: 100%;
+				position: fixed;
+			}
 			.header {
 				height: 100px;
 				font-family: 'Dosis', sans-serif;
@@ -112,19 +118,19 @@
 
 				if (window.mobilecheck()) {
 					document.addEventListener('touchstart', function(e) {
-						e.preventDefault();
 						const touch = e.touches[0];
 						prevX = touch.pageX;
 						prevY = touch.pageY;
+						e.preventDefault();
 					});
 
 					document.addEventListener('touchmove', function(e) {
-						e.preventDefault();
 					    const touch = e.touches[0];
 					    deltaX = touch.pageX - prevX;
 					    deltaY = touch.pageY - prevY;
 					    prevX = touch.pageX;
 					    prevY = touch.pageY;
+					    e.preventDefault();
 					}, false);
 				}
 
@@ -322,8 +328,8 @@
 						playerShield.end += modifier;				
 					}
 					if (deltaX) {
-						playerShield.start += (deltaX / $(document).width()) * Math.PI;
-						playerShield.end += (deltaX / $(document).width()) * Math.PI;
+						playerShield.start += (deltaX / $(document).width()) * 2 * Math.PI;
+						playerShield.end += (deltaX / $(document).width()) * 2 * Math.PI;
 					}
 					if (38 in keysDown) {
 						playerShield.radius += 1;

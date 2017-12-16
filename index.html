@@ -337,9 +337,9 @@
 					if (40 in keysDown) {
 						playerShield.radius -= 1;
 					}
-					if (deltaY) {
-						playerShield.radius -= (deltaY / $(document).height()) * 40.0;
-					}
+					// if (deltaY) {
+					// 	playerShield.radius -= (deltaY / $(document).height()) * 40.0;
+					// }
 					deltaX = 0;
 					deltaY = 0;
 					playerShield.radius = Math.min(shieldRadius*2, Math.max(shieldRadius/2, playerShield.radius));

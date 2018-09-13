@@ -1,0 +1,127 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: #1a1a1a;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  height: 100%;
+  margin: auto;
+  overflow: hidden;
+  padding: 0;
+  width: 100%;
+}
+
+.grid {
+	margin: auto;
+	position: relative;
+}
+
+.score {
+	color: #ffffff;
+	padding: 4px;
+	position: absolute;
+	right: 0;
+	text-shadow: 0 0 20px #ffffff;
+	top: 0;
+}
+
+.retry {
+	background: #ccc;
+	border: 2px solid #1a1a1a;
+	border-radius: 20px;
+	display: none;
+	height: 10%;
+	left: 35%;
+	position: absolute;
+	top: 45%;
+	width: 30%;
+}
+
+.retry:active {
+	background: #aaa;
+	color: white;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+td {
+	background: #3385ff;
+	border: 2px solid #1a1a1a;
+	-moz-box-shadow: inset 0 0 8px #003099;
+	-webkit-box-shadow: inset 0 0 8px #003099;
+	box-shadow: inset 0 0 8px #003099;
+}
+
+td.empty {
+	background: #333333;
+	-moz-box-shadow: inset 0 0 8px #1a1a1a;
+	-webkit-box-shadow: inset 0 0 8px #1a1a1a;
+	box-shadow: inset 0 0 8px #1a1a1a;
+}
+
+td.block {
+	background: #3385ff;
+	-moz-box-shadow: inset 0 0 8px #003099;
+	-webkit-box-shadow: inset 0 0 8px #003099;
+	box-shadow: inset 0 0 8px #003099;
+}
+
+td.lost {
+	background: #333333;
+	-moz-box-shadow: inset 0 0 8px #1a1a1a;
+	-webkit-box-shadow: inset 0 0 8px #1a1a1a;
+	box-shadow: inset 0 0 8px #1a1a1a;
+
+	animation-name: lost;
+	animation-duration: 2s;
+}
+
+@-moz-keyframes lost {
+	from {
+		background: #3385ff;
+		-moz-box-shadow: inset 0 0 8px #003099;
+		-webkit-box-shadow: inset 0 0 8px #003099;
+		box-shadow: inset 0 0 8px #003099;
+	}
+	to {
+		background: #333333;
+		-moz-box-shadow: inset 0 0 8px #1a1a1a;
+		-webkit-box-shadow: inset 0 0 8px #1a1a1a;
+		box-shadow: inset 0 0 8px #1a1a1a;
+	}
+}
+
+@-webkit-keyframes lost {
+	from {
+		background: #3385ff;
+		-moz-box-shadow: inset 0 0 8px #003099;
+		-webkit-box-shadow: inset 0 0 8px #003099;
+		box-shadow: inset 0 0 8px #003099;
+	}
+	to {
+		background: #333333;
+		-moz-box-shadow: inset 0 0 8px #1a1a1a;
+		-webkit-box-shadow: inset 0 0 8px #1a1a1a;
+		box-shadow: inset 0 0 8px #1a1a1a;
+	}
+}
+
+/* Standard syntax */
+@keyframes lost {
+	from {
+		background: #3385ff;
+		-moz-box-shadow: inset 0 0 8px #003099;
+		-webkit-box-shadow: inset 0 0 8px #003099;
+		box-shadow: inset 0 0 8px #003099;
+	}
+	to {
+		background: #333333;
+		-moz-box-shadow: inset 0 0 8px #1a1a1a;
+		-webkit-box-shadow: inset 0 0 8px #1a1a1a;
+		box-shadow: inset 0 0 8px #1a1a1a;
+	}
+}

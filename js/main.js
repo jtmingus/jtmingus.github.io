@@ -26,7 +26,7 @@ class PatternPlay {
 
     this.score = 0;
 
-    canvas.addEventListener('click', this.handleClickEvent.bind(this), false);
+    canvas.addEventListener('touchstart', this.handleClickEvent.bind(this), false);
   }
 
   initRows() {
@@ -125,6 +125,7 @@ class PatternPlay {
   }
 
   handleClickEvent(event) {
+    event.preventDefault();
     if (this.isDelayed) return;
 
     const x = event.pageX;

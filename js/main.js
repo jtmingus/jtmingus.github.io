@@ -48,8 +48,10 @@ class PatternPlay {
     this.ctx.fillStyle = this.backgroundColor;
     this.ctx.fillRect(0, 0, this.width, this.height);
 
-
-    window.requestAnimationFrame(this.draw.bind(this));
+    setInterval(() => {
+      this.draw();
+    }, 1000/30);
+//     window.requestAnimationFrame(this.draw.bind(this));
   }
 
   draw(timestamp) {
@@ -58,7 +60,7 @@ class PatternPlay {
     this.drawTargets();
     this.drawButtons();
 
-    window.requestAnimationFrame(this.draw.bind(this));
+//     window.requestAnimationFrame(this.draw.bind(this));
   }
 
   drawBackground() {

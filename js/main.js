@@ -26,7 +26,7 @@ class PatternPlay {
 
     this.score = 0;
 
-    canvas.addEventListener('touchstart', this.handleClickEvent.bind(this), false);
+    canvas.addEventListener('click', this.handleClickEvent.bind(this), false);
   }
 
   initRows() {

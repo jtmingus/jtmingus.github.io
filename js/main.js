@@ -147,7 +147,7 @@ class PatternPlay {
     this.score += 1;
 
     // Different notes for each index and bad sound when missed. TODO: ******************
-    (new Audio(this.sounds[clickedButtonIndex])).play();
+//     (new Audio(this.sounds[clickedButtonIndex])).play();
 
 
     for (let row = this.rows.length - 1; row >= 0; row--) {

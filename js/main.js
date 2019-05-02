@@ -30,7 +30,7 @@ class PatternPlay {
 
     const clickEvent = this.handleClickEvent.bind(this);
 
-    canvas.addEventListener('mousedown', clickEvent, false);
+    canvas.addEventListener('touchstart', clickEvent, false);
     
 
 //     const intervalId = setInterval(() => {
@@ -147,7 +147,7 @@ class PatternPlay {
     this.ctx.lineTo(width - curvature, height);
     this.ctx.quadraticCurveTo(width, height, width, height - curvature);
     this.ctx.lineTo(width, 0);
-    this.ctx.strokeStyle = 'blue';
+    this.ctx.strokeStyle = 'white';
     this.ctx.stroke();
     this.ctx.lineTo(0, 0);
     this.ctx.fillStyle = 'rgba(50, 50, 50, 0.7)';
@@ -193,10 +193,13 @@ class PatternPlay {
   }
 
   handleClickEvent(event) {
+    event.preventDefault();
     if (this.isDelayed) return;
 
-    const x = event.layerX || (event.clientX - document.getElementById('canvas').offsetLeft);
-    const y = event.layerY || event.clientY;
+    // const x = event.layerX || (event.clientX - document.getElementById('canvas').offsetLeft);
+    // const y = event.layerY || event.clientY;
+    const x = event.pageX;
+    const y = event.pageY;
 
     if (y <= this.height && y >= this.height - this.getButtonSize()) {
       const buttonIndex = Math.floor(x / this.getButtonSize());

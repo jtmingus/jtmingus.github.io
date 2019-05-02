@@ -33,13 +33,13 @@ class PatternPlay {
     canvas.addEventListener('touchstart', clickEvent, false);
     
 
-//     const intervalId = setInterval(() => {
-//       this.time -= 1;
-//       if (this.time === 0) {
-//         canvas.removeEventListener('click', clickEvent, false);
-//         clearInterval(intervalId);
-//       }
-//     }, 1000);
+    const intervalId = setInterval(() => {
+      this.time -= 1;
+      if (this.time === 0) {
+        canvas.removeEventListener('click', clickEvent, false);
+        clearInterval(intervalId);
+      }
+    }, 1000);
   }
 
   initRows() {
@@ -70,7 +70,7 @@ class PatternPlay {
     this.drawTargets();
     this.drawButtons();
     this.drawScore();
-//     this.drawTime();
+    this.drawTime();
 
     window.requestAnimationFrame(this.draw.bind(this));
   }
@@ -196,10 +196,10 @@ class PatternPlay {
     event.preventDefault();
     if (this.isDelayed) return;
 
-    // const x = event.layerX || (event.clientX - document.getElementById('canvas').offsetLeft);
-    // const y = event.layerY || event.clientY;
-    const x = event.pageX;
-    const y = event.pageY;
+    const x = event.layerX || (event.clientX - document.getElementById('canvas').offsetLeft);
+    const y = event.layerY || event.clientY;
+    // const x = event.pageX;
+    // const y = event.pageY;
 
     if (y <= this.height && y >= this.height - this.getButtonSize()) {
       const buttonIndex = Math.floor(x / this.getButtonSize());
@@ -253,14 +253,14 @@ class PatternPlay {
 }
 
 (function startGame() {
-  // document.addEventListener('touchmov  e', function(e) { e.preventDefault(); }, { passive:false });
+  document.addEventListener('touchmove', function(e) { e.preventDefault(); }, { passive:false });
   
   let canvasWidth = window.innerWidth;
   let canvasHeight = window.innerHeight;
-  // const minRatio = 0.65;
-  // if (canvasWidth / canvasHeight > minRatio) {
-  //   canvasWidth = canvasHeight * minRatio;
-  // }
+  const minRatio = 0.65;
+  if (canvasWidth / canvasHeight > minRatio) {
+    canvasWidth = canvasHeight * minRatio;
+  }
   const canvas = document.getElementById('canvas');
   const patternPlay = new PatternPlay(canvas, canvasWidth, canvasHeight);
 

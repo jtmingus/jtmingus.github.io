@@ -69,7 +69,7 @@ class PatternPlay {
     this.drawPaths();
     this.drawTargets();
     this.drawButtons();
-//     this.drawScore();
+    this.drawScore();
 //     this.drawTime();
 
     window.requestAnimationFrame(this.draw.bind(this));
@@ -139,7 +139,6 @@ class PatternPlay {
   }
 
   drawScore() {
-    this.ctx.save();
     const width = this.getButtonSize();
     const height = width/2;
     const curvature = width/8;
@@ -161,7 +160,6 @@ class PatternPlay {
     this.ctx.font = fontSize + "px Arial";
     this.ctx.fillStyle = 'white';
     this.ctx.fillText(this.score, leftOffset, fontSize+topOffset);
-    this.ctx.restore();
   }
 
   drawTime() {

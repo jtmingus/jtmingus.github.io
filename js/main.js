@@ -253,6 +253,8 @@ class PatternPlay {
 }
 
 (function startGame() {
+  document.addEventListener('touchmove', function(e) { e.preventDefault(); }, { passive:false });
+  
   let canvasWidth = window.innerWidth;
   let canvasHeight = window.innerHeight;
   const minRatio = 0.65;

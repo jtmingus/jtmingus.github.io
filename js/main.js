@@ -26,20 +26,20 @@ class PatternPlay {
     this.failedIndex = null;
 
     this.score = 0;
-    this.time = 15;
+    this.time = 60;
 
     const clickEvent = this.handleClickEvent.bind(this);
 
     canvas.addEventListener('click', clickEvent, false);
     
 
-    const intervalId = setInterval(() => {
-      this.time -= 1;
-      if (this.time === 0) {
-        canvas.removeEventListener('click', clickEvent, false);
-        clearInterval(intervalId);
-      }
-    }, 1000);
+//     const intervalId = setInterval(() => {
+//       this.time -= 1;
+//       if (this.time === 0) {
+//         canvas.removeEventListener('click', clickEvent, false);
+//         clearInterval(intervalId);
+//       }
+//     }, 1000);
   }
 
   initRows() {

@@ -30,7 +30,7 @@ class PatternPlay {
 
     const clickEvent = this.handleClickEvent.bind(this);
 
-    canvas.addEventListener('click', clickEvent, false);
+    canvas.addEventListener('mousedown', clickEvent, false);
     
 
 //     const intervalId = setInterval(() => {

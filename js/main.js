@@ -69,8 +69,8 @@ class PatternPlay {
     this.drawPaths();
     this.drawTargets();
     this.drawButtons();
-    this.drawScore();
-    this.drawTime();
+//     this.drawScore();
+//     this.drawTime();
 
     window.requestAnimationFrame(this.draw.bind(this));
   }

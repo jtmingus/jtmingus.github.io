@@ -30,13 +30,23 @@ class PatternPlay {
 
     const clickEvent = this.handleClickEvent.bind(this);
 
-    canvas.addEventListener('touchstart', clickEvent, false);
+    if ('ontouchstart' in document.documentElement) {
+      canvas.addEventListener('touchstart', clickEvent, false);
+    } else {
+      canvas.addEventListener('click', clickEvent, false);
+    }
+    
     
 
     const intervalId = setInterval(() => {
       this.time -= 1;
       if (this.time === 0) {
-        canvas.removeEventListener('click', clickEvent, false);
+        if ('ontouchstart' in document.documentElement) {
+          canvas.removeEventListener('touchstart', clickEvent, false);
+        } else {
+          canvas.removeEventListener('click', clickEvent, false);
+        }
+
         clearInterval(intervalId);
       }
     }, 1000);
@@ -257,7 +267,7 @@ class PatternPlay {
   
   let canvasWidth = window.innerWidth;
   let canvasHeight = window.innerHeight;
-  const minRatio = 0.65;
+  const minRatio = 0.75;
   if (canvasWidth / canvasHeight > minRatio) {
     canvasWidth = canvasHeight * minRatio;
   }

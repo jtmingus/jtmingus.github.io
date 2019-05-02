@@ -147,13 +147,12 @@ class PatternPlay {
     this.ctx.lineTo(width - curvature, height);
     this.ctx.quadraticCurveTo(width, height, width, height - curvature);
     this.ctx.lineTo(width, 0);
-    this.ctx.strokeStyle = 'white';
+    this.ctx.strokeStyle = 'blue';
     this.ctx.stroke();
     this.ctx.lineTo(0, 0);
     this.ctx.fillStyle = 'rgba(50, 50, 50, 0.7)';
     this.ctx.fill();
     
-
     const fontSize = Math.floor(height * 0.6);
     const topOffset = Math.floor(height / 10);
     const leftOffset = Math.floor(height * 2 / 5);
@@ -251,14 +250,14 @@ class PatternPlay {
 }
 
 (function startGame() {
-  document.addEventListener('touchmove', function(e) { e.preventDefault(); }, { passive:false });
+  // document.addEventListener('touchmov  e', function(e) { e.preventDefault(); }, { passive:false });
   
   let canvasWidth = window.innerWidth;
   let canvasHeight = window.innerHeight;
-  const minRatio = 0.65;
-  if (canvasWidth / canvasHeight > minRatio) {
-    canvasWidth = canvasHeight * minRatio;
-  }
+  // const minRatio = 0.65;
+  // if (canvasWidth / canvasHeight > minRatio) {
+  //   canvasWidth = canvasHeight * minRatio;
+  // }
   const canvas = document.getElementById('canvas');
   const patternPlay = new PatternPlay(canvas, canvasWidth, canvasHeight);
 

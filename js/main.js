@@ -2,6 +2,8 @@ class PatternPlay {
   constructor(canvas, width, height) {
     canvas.width = width;
     canvas.height = height;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
 
     this.ctx = canvas.getContext('2d');
 
@@ -14,7 +16,6 @@ class PatternPlay {
     this.pathWidth = 3;
     this.colors = ['#00a894', '#007bb0', '#f14d25', '#ffd400'];
     this.backgroundColor = '#333';
-    this.sounds = ['./sounds/C.mp3', './sounds/Eflat.mp3', './sounds/G.mp3', './sounds/Bflat.mp3'];
 
     this.numRows = 5;
     this.rows = this.initRows();
@@ -25,8 +26,20 @@ class PatternPlay {
     this.failedIndex = null;
 
     this.score = 0;
+    this.time = 15;
 
-    canvas.addEventListener('click', this.handleClickEvent.bind(this), false);
+    const clickEvent = this.handleClickEvent.bind(this);
+
+    canvas.addEventListener('click', clickEvent, false);
+    
+
+    const intervalId = setInterval(() => {
+      this.time -= 1;
+      if (this.time === 0) {
+        canvas.removeEventListener('click', clickEvent, false);
+        clearInterval(intervalId);
+      }
+    }, 1000);
   }
 
   initRows() {
@@ -48,7 +61,6 @@ class PatternPlay {
     this.ctx.fillStyle = this.backgroundColor;
     this.ctx.fillRect(0, 0, this.width, this.height);
 
-
     window.requestAnimationFrame(this.draw.bind(this));
   }
 
@@ -57,6 +69,8 @@ class PatternPlay {
     this.drawPaths();
     this.drawTargets();
     this.drawButtons();
+    this.drawScore();
+    this.drawTime();
 
     window.requestAnimationFrame(this.draw.bind(this));
   }
@@ -124,11 +138,68 @@ class PatternPlay {
     this.ctx.restore();
   }
 
+  drawScore() {
+    this.ctx.save();
+    const width = this.getButtonSize();
+    const height = width/2;
+    const curvature = width/8;
+    this.ctx.beginPath();
+    this.ctx.moveTo(0, height);
+    this.ctx.lineTo(width - curvature, height);
+    this.ctx.quadraticCurveTo(width, height, width, height - curvature);
+    this.ctx.lineTo(width, 0);
+    this.ctx.strokeStyle = 'white';
+    this.ctx.stroke();
+    this.ctx.lineTo(0, 0);
+    this.ctx.fillStyle = 'rgba(50, 50, 50, 0.7)';
+    this.ctx.fill();
+    
+
+    const fontSize = Math.floor(height * 0.6);
+    const topOffset = Math.floor(height / 10);
+    const leftOffset = Math.floor(height * 2 / 5);
+    this.ctx.font = fontSize + "px Arial";
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillText(this.score, leftOffset, fontSize+topOffset);
+    this.ctx.restore();
+  }
+
+  drawTime() {
+    this.ctx.save();
+    const width = this.getButtonSize();
+    const height = width/2;
+    const curvature = width/8;
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.width, height);
+    this.ctx.lineTo(this.width - width + curvature, height);
+    this.ctx.quadraticCurveTo(this.width - width, height, this.width - width, height - curvature);
+    this.ctx.lineTo(this.width - width, 0);
+    this.ctx.strokeStyle = 'white';
+    this.ctx.stroke();
+    this.ctx.lineTo(this.width, 0);
+    this.ctx.fillStyle = 'rgba(50, 50, 50, 0.7)';
+    this.ctx.fill();
+
+    const fontSize = Math.floor(height * 0.6);
+    const topOffset = Math.floor(height / 10);
+    const leftOffset = Math.floor(height* 2/ 5);
+    this.ctx.font = fontSize + "px Arial";
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillText(this.getTime(), this.width - width + leftOffset, fontSize+topOffset);
+    this.ctx.restore();
+  }
+
+  getTime() {
+    const minutes = Math.floor(this.time / 60);
+    const seconds = this.time % 60;
+    return minutes + ':' + (seconds < 10 ? '0' + seconds : seconds);
+  }
+
   handleClickEvent(event) {
     if (this.isDelayed) return;
 
-    const x = event.pageX;
-    const y = event.pageY;
+    const x = event.layerX || (event.clientX - document.getElementById('canvas').offsetLeft);
+    const y = event.layerY || event.clientY;
 
     if (y <= this.height && y >= this.height - this.getButtonSize()) {
       const buttonIndex = Math.floor(x / this.getButtonSize());
@@ -142,10 +213,6 @@ class PatternPlay {
 
   passTarget(clickedButtonIndex) {
     this.score += 1;
-
-    // Different notes for each index and bad sound when missed. TODO: ******************
-    (new Audio(this.sounds[clickedButtonIndex])).play();
-
 
     for (let row = this.rows.length - 1; row >= 0; row--) {
 
@@ -186,8 +253,14 @@ class PatternPlay {
 }
 
 (function startGame() {
+  let canvasWidth = window.innerWidth;
+  let canvasHeight = window.innerHeight;
+  const minRatio = 0.65;
+  if (canvasWidth / canvasHeight > minRatio) {
+    canvasWidth = canvasHeight * minRatio;
+  }
   const canvas = document.getElementById('canvas');
-  const patternPlay = new PatternPlay(canvas, window.innerWidth, window.innerHeight);
+  const patternPlay = new PatternPlay(canvas, canvasWidth, canvasHeight);
 
   patternPlay.start();
 })()

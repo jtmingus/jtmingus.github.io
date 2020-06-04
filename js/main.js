@@ -203,7 +203,7 @@ class PatternPlay {
   }
 
   handleClickEvent(event) {
-    alert('test');
+    alert(event);
     event.preventDefault();
     if (this.isDelayed) return;
 

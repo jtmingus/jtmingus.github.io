@@ -203,14 +203,12 @@ class PatternPlay {
   }
 
   handleClickEvent(event) {
-    alert(event);
     event.preventDefault();
     if (this.isDelayed) return;
 
-    const x = event.layerX || (event.clientX - document.getElementById('canvas').offsetLeft);
-    const y = event.layerY || event.clientY;
-    // const x = event.pageX;
-    // const y = event.pageY;
+    const y = event.layerY || event.clientY || event.touches[0].clientY;
+    const xPos = event.layerX || event.clientX || event.touches[0].clientX;
+    const x = xPos - document.getElementById('canvas').offsetLeft;
 
     if (y <= this.height && y >= this.height - this.getButtonSize()) {
       const buttonIndex = Math.floor(x / this.getButtonSize());

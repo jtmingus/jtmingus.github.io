@@ -3,6 +3,7 @@
 html, body {
   height:  100%;
   width:  100%;
+  overflow: hidden;
 }
 
 body {
@@ -24,6 +25,7 @@ body {
   color: #0c959e;
   font-family:  Verdana, sans-serif;
   font-size: 6rem;
+  /*text-shadow: 0 4px 6px #064e53;*/
   z-index: 2;
 }
 
@@ -51,6 +53,10 @@ body {
   height:  inherit;
   width:  inherit;
   animation: swim 5s linear infinite;
+}
+
+.fish svg {
+  filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
 }
 
 @keyframes swim {

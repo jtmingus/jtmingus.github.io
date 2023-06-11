@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>go.fish</title>
+  <link rel="stylesheet" href="./fish.css">
+</head>
+<body>
+  <div class="fullscreen"><h1>go.fish</h1></div>
+  <div class="fish fish1">
+    <img src="./red.svg"\>
+  </div>
+  <div class="fish fish2">
+    <img src="./orange.svg"\>
+  </div>
+  <div class="fish fish3">
+    <img src="./yellow.svg"\>
+  </div>
+<script>
+  function plusOrMinus() {
+    return Math.random() < 0.5 ? -1 : 1;
+  }
+  function getRandomTargetDelta() {
+    return plusOrMinus() * Math.random() * 120;
+  }
+  function getRandomDelay() {
+    return Math.floor(Math.random() * 300) + 200;
+  }
+  function buildFishObject(fishNode) {
+    fishNode.style.zIndex = Math.floor(Math.random() * 4);
+    return {
+      el: fishNode,
+      delay: getRandomDelay(),
+      targetDelta: {
+        x: getRandomTargetDelta(), 
+        y: getRandomTargetDelta(),
+      },
+    }
+  }
+  const fishes = [...document.querySelectorAll(".fish")].map(buildFishObject);
+
+  let mouseX = 0;
+  let mouseY = 0;
+
+  window.addEventListener("mousemove", function(event) {
+    mouseX = event.clientX;
+    mouseY = event.clientY;
+    for (const fish of fishes) {
+      setTimeout(function() {
+        fish.el.style.left = event.clientX + fish.targetDelta.x + "px";
+        fish.el.style.top = event.clientY + fish.targetDelta.y + "px";
+      }, fish.delay);
+    }
+  });
+
+  setInterval(function() {
+    for (const fish of fishes) {
+      const rect = fish.el.getBoundingClientRect();
+
+      const p2 = {x: mouseX, y: mouseY};
+      const p1 = {x: (rect.left + rect.width / 2) + window.scrollX, y: (rect.top + rect.height / 2) + window.scrollY};  
+
+      const angleDeg = ((Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI) + 180) % 360;
+      fish.el.style.rotate = angleDeg + 'deg';
+    }
+  }, 100);
+</script>
+</body>
+</html>
+

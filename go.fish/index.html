@@ -39,10 +39,11 @@
       }
       function giveFishRandomTarget() {
         const bodyRect = document.querySelector('body').getBoundingClientRect();
-        return {
-          x: Math.floor(Math.random() * bodyRect.right - 200) + 200,
-          y: Math.floor(Math.random() * bodyRect.bottom - 100) + 100,
+        const val = {
+          x: Math.floor(Math.random() * (bodyRect.right - 100)) + 50,
+          y: Math.floor(Math.random() * (bodyRect.bottom - 100)) + 50,
         };
+        return val;
       }
       function buildFishObject(fishNode) {
         fishNode.style.zIndex = Math.floor(Math.random() * 4);
@@ -58,6 +59,7 @@
             x: getRandomTargetDeltaX(), 
             y: getRandomTargetDeltaY(),
           },
+          timeOfLastMove: Date.now(),
         }
       }
 
@@ -65,17 +67,17 @@
 
       let mouseX = 0;
       let mouseY = 0;
-      let timeOfLastMove = Date.now();
+      let timeOfLastMove = fishes.map(() => Date.now());
 
-      const eventToListenTo = 'ontouchstart' in window ? 'click' : 'mousemove';
-      window.addEventListener(eventToListenTo, function(event) {
+      // const eventToListenTo = 'ontouchstart' in window ? 'click' : 'mousemove';
+      window.addEventListener('mousemove', function(event) {
         mouseX = event.clientX;
         mouseY = event.clientY;
-        timeOfLastMove = Date.now();
 
         // Remove random target from the fish so that they target the mouse.
         for (const fish of fishes) {
           fish.randTarget = undefined;
+          fish.timeOfLastMove = Date.now();
         }
       });
 
@@ -87,15 +89,16 @@
         let elapsedTime = now - animationTime;
         animationTime = now;
 
-        for (const fish of fishes) {
+        for (let i = 0; i < fishes.length; i++) {
+          const fish = fishes[i]
           const target = fish.randTarget || {x: mouseX, y: mouseY};
 
           // Set fish position.
           const deltaX = target.x + fish.targetDelta.x - fish.x;
           const deltaY = target.y + fish.targetDelta.y - fish.y;
 
-          fish.x += deltaX * elapsedTime * fish.speed / 3000;
-          fish.y += deltaY * elapsedTime * fish.speed / 3000;
+          fish.x += deltaX * elapsedTime * fish.speed / 2000;
+          fish.y += deltaY * elapsedTime * fish.speed / 2000;
           fish.el.style.setProperty('--fishX', fish.x + 'px');
           fish.el.style.setProperty('--fishY', fish.y + 'px');
 
@@ -107,10 +110,12 @@
 
           const angleDeg = ((Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI) + 180) % 360;
           fish.el.style.setProperty('--fishAngle', angleDeg + 'deg');
+          fish.el.style.setProperty('--fishScaleY', angleDeg > 90 && angleDeg < 270 ? -1 : 1);
 
           // If fish is not following mouse and is close to target, give fish a new target.
-          if (now - timeOfLastMove > 4000 && deltaX < 200 && deltaY < 200) {
+          if (now - fish.timeOfLastMove > 3000 && deltaX < 100 && deltaY < 100) {
             fish.randTarget = giveFishRandomTarget(fish);
+            fish.timeOfLastMove = Date.now();
           }
         }
 

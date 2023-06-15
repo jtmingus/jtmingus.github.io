@@ -44,8 +44,9 @@ body {
   --fishAngle: 0deg;
   --fishX: 0px;
   --fishY: 0px;
+  --fishScaleY: 1;
 
-  transform: translate3d(var(--fishX), var(--fishY), 0) rotate(var(--fishAngle));
+  transform: translate3d(var(--fishX), var(--fishY), 0) rotate(var(--fishAngle)) scaleY(var(--fishScaleY));
   transition:  transform ease-in-out;
 }
 

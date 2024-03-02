@@ -9,7 +9,7 @@ const state = {
   lastMousePos: null,
 };
 
-const DEFAULT_NODES = [1, 2, 3, 4, 5, 6, 7];
+const DEFAULT_NODES = [1, 2, 3, 4, 5, 6, 7, 8, null, 10];
 const NODES_LOCAL_STORAGE_KEY = "treeNodes";
 function load() {
   const savedNodes = localStorage.getItem(NODES_LOCAL_STORAGE_KEY);
